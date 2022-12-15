@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1 class="uk-heading-bullet">{{ page_title}}</h1>
+
+<div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
+  <h3 class="uk-card-title">Результат поиска для "{{ the_phrase }}"</h3>
+  <p>{{ the_result }}</p>
+</div>
+
+{% endblock %}
