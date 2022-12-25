@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1 class="uk-heading-bullet">{{ page_title}}</h1>
+
+<dl class="uk-description-list uk-description-list-divider">
+  {{ list_log|safe }}
+</dl>
+
+{% endblock %}
