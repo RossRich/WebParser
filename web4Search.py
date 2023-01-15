@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
+import check_logged
 import datetime
 
 log_file_name: str = "parser_log.log"
@@ -45,15 +46,15 @@ def do_search() -> str:
 
 @app.route("/viewlog")
 def view_log() -> str:
-    res:str = ""
+    res: str = ""
     try:
         with open(log_file_name, "r") as logs:
-            title:str = "<dt>{0}</dt>"
+            title: str = "<dt>{0}</dt>"
             des: str = "<dd>{0}</dd>"
             for log in logs:
                 data_list = str.split(log, " - ")
                 # print(data_list)
-                res+=title.format(data_list[0]) + des.format(data_list[1])
+                res += title.format(data_list[0]) + des.format(data_list[1])
     except OSError:
         print("[{0}] Failed to open file {1}".format(
             log_request.__name__, log_file_name))
@@ -61,5 +62,31 @@ def view_log() -> str:
     return render_template("viewlog.html", page_title="View log", list_log=res)
 
 
+@app.route("/login")
+def do_login() -> str:
+    session["logged_in"] = True
+    print(session)
+    return "Теперь вы в системе"
+
+
+@app.route("/status")
+@check_logged.check_logged_in
+def get_status() -> str:
+    msg_logged = "Вы вошли в систему под именем: {0}"
+    # msg_not_logged = "Вы не вошли в систему"
+    return msg_logged.format("")
+
+
+@app.route("/logout")
+@check_logged.check_logged_in
+def do_logout() -> str:
+    if session["logged_in"]:
+        session["logged_in"] = False
+
+    return str(True)
+
+
 if __name__ == "__main__":
+    app.secret_key = "TheSecretKey"
     app.run(debug=True)
+    session.setdefault("logged_in", False)
